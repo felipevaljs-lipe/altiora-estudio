@@ -1,0 +1,222 @@
+@if (mode === 'hero') {
+  <!-- ═══════════════════════════════════════════════════════════
+       HERO MODE — inline card inside the hero section
+       ═══════════════════════════════════════════════════════════ -->
+  <div class="hero-chat" role="region" aria-label="Chat con Alti, asistente de Altiora Estudio">
+    <div class="hc-head">
+      <span class="hc-avatar" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none">
+          <path d="M9 18.5a4.5 4.5 0 0 1-.5-8.96A6 6 0 0 1 20 6.2a4.5 4.5 0 0 1 1.3 8.7"
+                stroke="url(#hc-g1)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M12 9v5m0-5-1.8 1.4M12 9l1.8 1.4"
+                stroke="url(#hc-g1)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+          <defs>
+            <linearGradient id="hc-g1" x1="4" y1="5" x2="22" y2="20">
+              <stop stop-color="#77ACA2"/><stop offset="1" stop-color="#F4E9CD"/>
+            </linearGradient>
+          </defs>
+        </svg>
+      </span>
+      <div class="hc-id">
+        <span class="hc-name">Alti · Asistente</span>
+        <span class="hc-status">
+          <span class="hc-dot" [class.online]="lex.online()" aria-hidden="true"></span>
+          {{ lex.online() ? 'Online' : '' }}
+        </span>
+      </div>
+      @if (lead()) {
+        <button type="button" class="hc-icon-btn" (click)="resetChat()" aria-label="Nueva conversación" title="Nueva conversación">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M3 12a9 9 0 0 1 9-9 9 9 0 0 1 6.36 2.64L21 8M21 3v5h-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M21 12a9 9 0 0 1-9 9 9 9 0 0 1-6.36-2.64L3 16M3 21v-5h5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      }
+    </div>
+
+    <div class="hc-body" #body aria-live="polite" aria-atomic="false">
+      @for (m of messages(); track $index) {
+        <div class="hc-msg-group" [class.out]="m.role === 'user'">
+          <div class="hc-bubble" [class.in]="m.role === 'bot'" [class.out]="m.role === 'user'">
+            {{ m.text }}
+          </div>
+          @if (m.buttons && m.buttons.length) {
+            <div class="hc-qr" role="group" aria-label="Opciones">
+              @for (btn of m.buttons; track btn.value) {
+                <button type="button" class="hc-qr-btn" (click)="send(btn.value)">{{ btn.text }}</button>
+              }
+            </div>
+          }
+        </div>
+      }
+      @if (sending()) {
+        <div class="hc-bubble in typing" aria-label="Alti está escribiendo">
+          <span></span><span></span><span></span>
+        </div>
+      }
+      @if (lead()) {
+        <div class="hc-lead" role="status">
+          <span aria-hidden="true">✅</span>
+          <div>
+            <p class="hc-lead-title">Datos registrados</p>
+            @if (lead()!.nombre)  { <p><b>Nombre:</b> {{ lead()!.nombre }}</p> }
+            @if (lead()!.email)   { <p><b>Email:</b> {{ lead()!.email }}</p> }
+            @if (lead()!.servicio){ <p><b>Servicio:</b> {{ lead()!.servicio }}</p> }
+          </div>
+        </div>
+      }
+    </div>
+
+    <form class="hc-input" (submit)="$event.preventDefault(); send()">
+      <input
+        #msgInput
+        type="text"
+        [value]="input()"
+        (input)="input.set(msgInput.value)"
+        [placeholder]="chat.limitReached() ? 'Escríbenos por correo 🙂' : 'Escribe un mensaje…'"
+        aria-label="Mensaje"
+        autocomplete="off"
+        [attr.maxlength]="chat.maxMessageChars"
+        [disabled]="sending() || chat.limitReached()"
+      />
+      <button type="submit" class="hc-send" [disabled]="sending() || chat.limitReached() || !input().trim()" aria-label="Enviar">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M5 12h13M12 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+    </form>
+  </div>
+
+} @else {
+  <!-- ═══════════════════════════════════════════════════════════
+       WIDGET MODE — floating launcher + slide-up panel
+       ═══════════════════════════════════════════════════════════ -->
+  <div class="chatbot" [class.is-visible]="widgetVisible()">
+
+    <!-- Panel -->
+    <div
+      class="panel"
+      [class.is-open]="open()"
+      role="dialog"
+      aria-label="Chat con Alti"
+      aria-modal="true"
+      [attr.aria-hidden]="!open()"
+    >
+      <!-- Drag handle (mobile) -->
+      <div class="panel-handle" aria-hidden="true"></div>
+
+      <header class="panel-head">
+        <span class="avatar" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none">
+            <path d="M9 18.5a4.5 4.5 0 0 1-.5-8.96A6 6 0 0 1 20 6.2a4.5 4.5 0 0 1 1.3 8.7"
+                  stroke="url(#wb-g1)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M12 9v5m0-5-1.8 1.4M12 9l1.8 1.4"
+                  stroke="url(#wb-g1)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+            <defs>
+              <linearGradient id="wb-g1" x1="4" y1="5" x2="22" y2="20">
+                <stop stop-color="#77ACA2"/><stop offset="1" stop-color="#F4E9CD"/>
+              </linearGradient>
+            </defs>
+          </svg>
+        </span>
+        <div class="wid-id">
+          <span class="wid-name">Alti · Asistente</span>
+          <span class="wid-status">
+            <span class="dot" [class.online]="lex.online()" aria-hidden="true"></span>
+            {{ lex.online() ? 'En línea' : 'Conectando…' }}
+          </span>
+        </div>
+        <div class="head-actions">
+          @if (lead()) {
+            <button type="button" class="icon-btn" (click)="resetChat()" aria-label="Nueva conversación" title="Nueva conversación">
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M3 12a9 9 0 0 1 9-9 9 9 0 0 1 6.36 2.64L21 8M21 3v5h-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M21 12a9 9 0 0 1-9 9 9 9 0 0 1-6.36-2.64L3 16M3 21v-5h5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
+          }
+          <button type="button" class="icon-btn" (click)="open.set(false)" aria-label="Cerrar chat">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </button>
+        </div>
+      </header>
+
+      <div class="panel-body" #body aria-live="polite" aria-atomic="false">
+        @for (m of messages(); track $index) {
+          <div class="msg-group" [class.msg-group--out]="m.role === 'user'">
+            <div class="bubble" [class.in]="m.role === 'bot'" [class.out]="m.role === 'user'">
+              {{ m.text }}
+            </div>
+            @if (m.buttons && m.buttons.length) {
+              <div class="quick-replies" role="group" aria-label="Opciones de respuesta rápida">
+                @for (btn of m.buttons; track btn.value) {
+                  <button type="button" class="qr-btn" (click)="send(btn.value)">{{ btn.text }}</button>
+                }
+              </div>
+            }
+          </div>
+        }
+        @if (sending()) {
+          <div class="bubble in typing" aria-label="Alti está escribiendo">
+            <span></span><span></span><span></span>
+          </div>
+        }
+        @if (lead()) {
+          <div class="lead-card" role="status">
+            <span class="lead-card__icon" aria-hidden="true">✅</span>
+            <div class="lead-card__body">
+              <p class="lead-card__title">Datos registrados</p>
+              @if (lead()!.nombre)  { <p><span class="lead-card__label">Nombre:</span> {{ lead()!.nombre }}</p> }
+              @if (lead()!.email)   { <p><span class="lead-card__label">Email:</span> {{ lead()!.email }}</p> }
+              @if (lead()!.servicio){ <p><span class="lead-card__label">Servicio:</span> {{ lead()!.servicio }}</p> }
+            </div>
+          </div>
+        }
+      </div>
+
+      <form class="panel-input" (submit)="$event.preventDefault(); send()">
+        <input
+          #msgInput
+          type="text"
+          [value]="input()"
+          (input)="input.set(msgInput.value)"
+          [placeholder]="chat.limitReached() ? 'Escríbenos por correo 🙂' : 'Escribe un mensaje…'"
+          aria-label="Mensaje"
+          autocomplete="off"
+          [attr.maxlength]="chat.maxMessageChars"
+          [disabled]="sending() || chat.limitReached()"
+        />
+        <button type="submit" class="send-btn" [disabled]="sending() || chat.limitReached() || !input().trim()" aria-label="Enviar mensaje">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M5 12h13M12 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </form>
+    </div>
+
+    <!-- Launcher FAB -->
+    <button
+      
+      type="button"
+      class="launcher"
+      (click)="toggle()"
+      [attr.aria-expanded]="open()"
+      aria-label="Abrir chat con Alti"
+    >
+      <span class="launcher-pulse" aria-hidden="true"></span>
+      @if (!open()) {
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M4 5h16a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H10l-5 4v-4H4a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1z"
+                stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M8.5 9.5h7M8.5 12h4.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+      } @else {
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      }
+    </button>
+  </div>
+}

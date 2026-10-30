@@ -1,0 +1,34 @@
+<section class="section section--soft" id="preguntas">
+  <div class="container faq-wrap">
+    <div class="section-head" reveal>
+      <span class="eyebrow eyebrow--centered">Preguntas frecuentes</span>
+      <h2>Lo que más nos <span class="text-grad">preguntan</span></h2>
+    </div>
+
+    <div class="faq-list" reveal data-delay="1">
+      @for (item of items; track item.q; let i = $index) {
+        <div class="faq-item" [class.is-open]="open() === i">
+          <button
+            type="button"
+            class="faq-q"
+            [attr.aria-expanded]="open() === i"
+            (click)="toggle(i)"
+          >
+            <span>{{ item.q }}</span>
+            <span class="faq-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none">
+                <path d="M6 12h12" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                <path class="v" d="M12 6v12" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+              </svg>
+            </span>
+          </button>
+          <div class="faq-a">
+            <div class="faq-a-inner">
+              <p>{{ item.a }}</p>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+</section>

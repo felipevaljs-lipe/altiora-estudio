@@ -1,0 +1,428 @@
+/* ==========================================================================
+   Altiora Estudio — Design System
+   ========================================================================== */
+
+:root {
+  /* ----------------------------------------------------------------------
+     Palette — teal / sage / petrol / cream
+       #031926 deep petrol   #468189 teal
+       #77ACA2 sage          #F4E9CD warm cream
+     The old --indigo/--violet/--cyan token NAMES are kept so existing
+     components keep working, but their VALUES now map to the new palette:
+       indigo* → teal        violet* → sage/teal        cyan*  → sage
+     ---------------------------------------------------------------------- */
+  --indigo-500: #468189;   /* teal (primary)        */
+  --indigo-600: #3d7781;   /* teal, slightly deeper  */
+  --indigo-700: #346a73;   /* teal, deepest          */
+  --violet-500: #77ACA2;   /* sage                   */
+  --violet-600: #5e9890;   /* sage, deeper           */
+  --cyan-400: #8dbcb2;     /* light sage             */
+  --cyan-500: #77ACA2;     /* sage                   */
+
+  /* Raw RGB channels for tint math — used as rgba(var(--x-rgb), a) */
+  --teal-rgb: 70, 129, 137;      /* #468189 */
+  --sage-rgb: 119, 172, 162;     /* #77ACA2 */
+  --petrol-rgb: 3, 25, 38;       /* #031926 */
+  --cream-rgb: 244, 233, 205;    /* #F4E9CD */
+
+  /* Ink — cooled toward the petrol base */
+  --ink-900: #031926;
+  --ink-800: #0b2430;
+  --ink-700: #1c3942;
+  --ink-600: #35535b;
+  --ink-500: #4c666d;
+  --muted: #6b8187;
+  --muted-soft: #8aa0a4;
+
+  /* Surfaces — warm, cream-tinted neutrals */
+  --bg: #ffffff;
+  --bg-soft: #f7f4ec;      /* faint cream */
+  --bg-tint: #eaf1ef;      /* faint sage  */
+  --surface: #ffffff;
+  --line: #e4e8e5;
+  --line-soft: #eef1ee;
+
+  /* Hero dark */
+  --hero-bg: #031926;
+  --hero-bg-2: #0a2a38;
+
+  /* Gradients */
+  --grad-brand: linear-gradient(135deg, #468189 0%, #5e9890 45%, #77ACA2 100%);
+  --grad-brand-soft: linear-gradient(135deg, rgba(var(--teal-rgb), 0.12), rgba(var(--sage-rgb), 0.12));
+  --grad-text: linear-gradient(120deg, #77ACA2 0%, #9cc3ba 45%, #F4E9CD 100%);
+  --grad-hero: radial-gradient(120% 120% at 80% -10%, rgba(var(--teal-rgb), 0.42), transparent 55%),
+               radial-gradient(90% 90% at 10% 10%, rgba(var(--sage-rgb), 0.28), transparent 50%),
+               linear-gradient(180deg, #031926 0%, #06222f 60%, #031926 100%);
+
+  /* Radius */
+  --r-sm: 10px;
+  --r-md: 16px;
+  --r-lg: 24px;
+  --r-xl: 32px;
+  --r-pill: 999px;
+
+  /* Shadow */
+  --shadow-xs: 0 1px 2px rgba(15, 23, 42, 0.06);
+  --shadow-sm: 0 2px 8px rgba(15, 23, 42, 0.06), 0 1px 2px rgba(15, 23, 42, 0.04);
+  --shadow: 0 8px 24px rgba(15, 23, 42, 0.08), 0 2px 6px rgba(15, 23, 42, 0.04);
+  --shadow-md: 0 18px 40px rgba(15, 23, 42, 0.12), 0 6px 14px rgba(15, 23, 42, 0.06);
+  --shadow-lg: 0 30px 70px rgba(15, 23, 42, 0.18);
+  --shadow-glow: 0 20px 50px rgba(var(--teal-rgb), 0.3);
+
+  /* Layout */
+  --container: 1180px;
+  --gutter: clamp(1.25rem, 4vw, 2.5rem);
+  --section-y: clamp(4.5rem, 9vw, 8rem);
+  --header-h: 76px;
+
+  /* Type */
+  --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-display: "Sora", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+
+  /* Motion */
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --dur: 0.6s;
+}
+
+/* ---------------------------------------------------------------------------
+   Reset & base
+   --------------------------------------------------------------------------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+* {
+  margin: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: var(--header-h);
+  -webkit-text-size-adjust: 100%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+body {
+  font-family: var(--font-sans);
+  font-size: 16px;
+  line-height: 1.65;
+  color: var(--ink-600);
+  background: var(--bg);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  overflow-x: hidden;
+}
+
+img,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+}
+
+::selection {
+  background: rgba(var(--teal-rgb), 0.22);
+  color: var(--ink-900);
+}
+
+/* ---------------------------------------------------------------------------
+   Typography
+   --------------------------------------------------------------------------- */
+h1, h2, h3, h4 {
+  font-family: var(--font-display);
+  color: var(--ink-900);
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+  font-weight: 700;
+  text-wrap: balance;
+}
+
+h1 {
+  font-size: clamp(2.5rem, 5.4vw, 4.25rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+}
+
+h2 {
+  font-size: clamp(2rem, 3.6vw, 3rem);
+}
+
+h3 {
+  font-size: clamp(1.2rem, 1.6vw, 1.4rem);
+}
+
+p {
+  text-wrap: pretty;
+}
+
+.lead {
+  font-size: clamp(1.0625rem, 1.4vw, 1.25rem);
+  color: var(--ink-500);
+  line-height: 1.7;
+}
+
+/* ---------------------------------------------------------------------------
+   Layout helpers
+   --------------------------------------------------------------------------- */
+.container {
+  width: 100%;
+  max-width: var(--container);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+.section {
+  padding-block: var(--section-y);
+}
+
+.section--soft {
+  background: var(--bg-soft);
+}
+
+.section--tint {
+  background:
+    radial-gradient(60% 60% at 100% 0%, rgba(var(--teal-rgb), 0.06), transparent 60%),
+    radial-gradient(50% 50% at 0% 100%, rgba(var(--sage-rgb), 0.07), transparent 60%),
+    var(--bg-soft);
+}
+
+.section-head {
+  max-width: 640px;
+  margin-inline: auto;
+  text-align: center;
+}
+
+.section-head.left {
+  margin-inline: 0;
+  text-align: left;
+}
+
+/* ---------------------------------------------------------------------------
+   Shared UI primitives
+   --------------------------------------------------------------------------- */
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-sans);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--indigo-600);
+}
+
+.eyebrow::before {
+  content: "";
+  width: 22px;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--grad-brand);
+}
+
+.eyebrow--centered {
+  justify-content: center;
+}
+
+.eyebrow--light {
+  color: #F4E9CD;
+}
+
+.eyebrow--light::before {
+  background: linear-gradient(90deg, #77ACA2, #F4E9CD);
+}
+
+.text-grad {
+  background: var(--grad-text);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  padding: 0.85rem 1.5rem;
+  border-radius: var(--r-pill);
+  font-weight: 600;
+  font-size: 0.9375rem;
+  line-height: 1;
+  border: 1px solid transparent;
+  transition: transform 0.25s var(--ease), box-shadow 0.25s var(--ease),
+              background-color 0.25s var(--ease), border-color 0.25s var(--ease),
+              color 0.25s var(--ease);
+  white-space: nowrap;
+}
+
+.btn:active {
+  transform: translateY(1px);
+}
+
+.btn-primary {
+  background: var(--grad-brand);
+  color: #fff;
+  box-shadow: var(--shadow-glow);
+  background-size: 160% 160%;
+  background-position: 0% 50%;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 26px 60px rgba(var(--teal-rgb), 0.42);
+  background-position: 100% 50%;
+}
+
+.btn-ghost {
+  background: var(--bg);
+  color: var(--ink-900);
+  border-color: var(--line);
+  box-shadow: var(--shadow-xs);
+}
+
+.btn-ghost:hover {
+  transform: translateY(-2px);
+  border-color: transparent;
+  box-shadow: var(--shadow);
+  background: var(--bg-tint);
+}
+
+.btn-light {
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.18);
+  backdrop-filter: blur(8px);
+}
+
+.btn-light:hover {
+  background: rgba(255, 255, 255, 0.16);
+  transform: translateY(-2px);
+}
+
+.btn-sm {
+  padding: 0.6rem 1.1rem;
+  font-size: 0.85rem;
+}
+
+/* Badge / tag pill */
+.tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.3rem 0.7rem;
+  border-radius: var(--r-pill);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  background: var(--bg-tint);
+  color: var(--indigo-700);
+  border: 1px solid rgba(var(--teal-rgb), 0.16);
+}
+
+.tag--ia {
+  background: linear-gradient(135deg, rgba(var(--teal-rgb), 0.12), rgba(var(--sage-rgb), 0.1));
+  color: var(--indigo-700);
+  border-color: rgba(var(--teal-rgb), 0.2);
+}
+
+.tag--sw {
+  background: linear-gradient(135deg, rgba(var(--sage-rgb), 0.14), rgba(var(--sage-rgb), 0.08));
+  color: #3d7781;
+  border-color: rgba(var(--sage-rgb), 0.24);
+}
+
+/* ---------------------------------------------------------------------------
+   Reveal-on-scroll animation
+   --------------------------------------------------------------------------- */
+.reveal {
+  opacity: 0;
+  transform: translateY(22px);
+  transition: opacity 0.7s var(--ease-out), transform 0.7s var(--ease-out);
+  will-change: opacity, transform;
+}
+
+.reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+.reveal[data-delay="1"] { transition-delay: 0.08s; }
+.reveal[data-delay="2"] { transition-delay: 0.16s; }
+.reveal[data-delay="3"] { transition-delay: 0.24s; }
+.reveal[data-delay="4"] { transition-delay: 0.32s; }
+.reveal[data-delay="5"] { transition-delay: 0.4s; }
+.reveal[data-delay="6"] { transition-delay: 0.48s; }
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Accessibility helpers
+   --------------------------------------------------------------------------- */
+:focus-visible {
+  outline: 2px solid var(--indigo-500);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.skip-link {
+  position: absolute;
+  left: 50%;
+  top: -100px;
+  transform: translateX(-50%);
+  z-index: 200;
+  background: var(--ink-900);
+  color: #fff;
+  padding: 0.7rem 1.2rem;
+  border-radius: 0 0 12px 12px;
+  transition: top 0.2s var(--ease);
+}
+
+.skip-link:focus {
+  top: 0;
+}

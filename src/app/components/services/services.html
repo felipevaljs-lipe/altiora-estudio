@@ -1,0 +1,105 @@
+<section class="section section--tint" id="servicios">
+  <div class="container">
+    <div class="section-head" reveal>
+      <span class="eyebrow eyebrow--centered">Lo que hacemos</span>
+      <h2>Servicios de <span class="text-grad">IA y software</span> en la nube</h2>
+      <p class="lead">
+        Combinamos la inteligencia artificial de AWS con desarrollo de software a medida
+        para resolver problemas reales de tu negocio.
+      </p>
+    </div>
+
+    <div class="filter" role="tablist" aria-label="Filtrar servicios" reveal data-delay="1">
+      @for (tab of filters; track tab.id) {
+        <button
+          type="button"
+          class="filter-tab"
+          role="tab"
+          [class.is-active]="active() === tab.id"
+          [attr.aria-selected]="active() === tab.id"
+          (click)="active.set(tab.id)"
+        >
+          {{ tab.label }}
+        </button>
+      }
+    </div>
+
+    <div class="grid">
+      @for (s of visible(); track s.title; let i = $index) {
+        <article
+          class="card"
+          [attr.data-delay]="(i % 6) + 1"
+          reveal
+        >
+          <div class="card-top">
+            <span class="card-ico" [class]="'ico-' + s.category">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                   stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                @switch (s.icon) {
+                  @case ('lex') {
+                    <path d="M4 5h16a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H10l-5 4v-4H4a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1z" />
+                    <path d="M8.5 9.5h7M8.5 12h4.5" />
+                  }
+                  @case ('bedrock') {
+                    <path d="M12 3l1.7 4.6L18 9l-4.3 1.4L12 15l-1.7-4.6L6 9l4.3-1.4L12 3z" />
+                    <path d="M18.5 14l.8 2 .7-.3.3.8.7-.3.3.8M18 14.5l.6 1.6M17.5 16.5l1.4-.5" />
+                  }
+                  @case ('polly') {
+                    <rect x="9" y="3" width="6" height="11" rx="3" />
+                    <path d="M5 11a7 7 0 0 0 14 0" />
+                    <path d="M12 18v3M8.5 21h7" />
+                  }
+                  @case ('transcribe') {
+                    <path d="M5 10v4M9 6.5v11M13 4v16M17 7.5v9M21 11v2" />
+                  }
+                  @case ('rekognition') {
+                    <path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6z" />
+                    <circle cx="12" cy="12" r="2.6" />
+                  }
+                  @case ('comprehend') {
+                    <path d="M7 3h6.5L18 7.5V21H7z" />
+                    <path d="M13.5 3v4.5H18" />
+                    <path d="M9.5 12.5h5M9.5 15.5h5M9.5 18.5h3" />
+                  }
+                  @case ('code') {
+                    <path d="M9 8l-4 4 4 4M15 8l4 4-4 4" />
+                    <path d="M13 5l-2 14" />
+                  }
+                  @case ('cloud') {
+                    <path d="M7 18a4 4 0 0 1-.6-7.96A6 6 0 0 1 18 9.34a4.5 4.5 0 0 1-.4 8.66H7z" />
+                    <path d="M9.5 14.5l-2 2 2 2M14.5 14.5l2 2-2 2" />
+                  }
+                  @case ('plug') {
+                    <path d="M9 2v5M15 2v5" />
+                    <path d="M8 7h8v4a4 4 0 0 1-8 0V7z" />
+                    <path d="M12 15v5M10 20h4" />
+                  }
+                  @case ('analytics') {
+                    <path d="M4 20h16M8 20v-5M12 20v-8M16 20v-11" />
+                    <path d="M5 8l4-4 4 3 5-5" />
+                  }
+                }
+              </svg>
+            </span>
+            <span class="tag" [class]="s.category === 'ia' ? 'tag--ia' : 'tag--sw'">
+              {{ s.tag }}
+            </span>
+          </div>
+
+          <h3 class="card-title">{{ s.title }}</h3>
+          <p class="card-desc">{{ s.desc }}</p>
+
+          <span class="card-link" aria-hidden="true">
+            Explorar
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none">
+              <path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </span>
+
+          <span class="card-glow" aria-hidden="true"></span>
+        </article>
+      }
+    </div>
+  </div>
+</section>

@@ -1,0 +1,174 @@
+:host { display: contents; }
+
+/* Backdrop */
+.cf-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  background: rgba(3, 25, 38, 0.55);
+  backdrop-filter: blur(6px);
+  animation: cf-fade 0.25s var(--ease-out);
+}
+@keyframes cf-fade { from { opacity: 0; } to { opacity: 1; } }
+
+/* Dialog */
+.cf-dialog {
+  position: relative;
+  width: min(520px, 100%);
+  max-height: calc(100dvh - 2rem);
+  overflow-y: auto;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  box-shadow: 0 40px 90px rgba(3, 25, 38, 0.35);
+  padding: clamp(1.5rem, 4vw, 2.25rem);
+  animation: cf-pop 0.3s var(--ease-out);
+}
+@keyframes cf-pop {
+  from { opacity: 0; transform: translateY(14px) scale(0.98); }
+  to   { opacity: 1; transform: none; }
+}
+
+.cf-close {
+  position: absolute;
+  top: 0.85rem;
+  right: 0.85rem;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  display: grid;
+  place-items: center;
+  color: var(--muted);
+  transition: background 0.2s var(--ease), color 0.2s var(--ease);
+}
+.cf-close:hover { background: var(--bg-tint); color: var(--ink-900); }
+.cf-close svg { width: 18px; height: 18px; }
+
+/* Head */
+.cf-head { margin-bottom: 1.4rem; padding-right: 2rem; }
+.cf-head h3 {
+  font-size: clamp(1.3rem, 2.5vw, 1.6rem);
+  margin-bottom: 0.4rem;
+}
+.cf-head p { color: var(--ink-500); font-size: 0.95rem; }
+
+/* Form */
+.cf-form { display: flex; flex-direction: column; gap: 1rem; }
+
+.cf-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.cf-field { display: flex; flex-direction: column; gap: 0.4rem; }
+.cf-field > span {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--ink-700);
+}
+.cf-field em { color: var(--indigo-600); font-style: normal; }
+
+.cf-field input,
+.cf-field textarea,
+.cf-select select {
+  width: 100%;
+  padding: 0.7rem 0.9rem;
+  border-radius: var(--r-sm);
+  border: 1px solid var(--line);
+  background: var(--bg-soft);
+  color: var(--ink-900);
+  font: inherit;
+  font-size: max(0.95rem, 16px);
+  transition: border-color 0.2s var(--ease), box-shadow 0.2s var(--ease), background 0.2s var(--ease);
+}
+.cf-field textarea { resize: vertical; min-height: 92px; }
+
+.cf-field input:focus,
+.cf-field textarea:focus,
+.cf-select select:focus {
+  outline: none;
+  border-color: var(--indigo-500);
+  background: var(--surface);
+  box-shadow: 0 0 0 3px rgba(var(--teal-rgb), 0.15);
+}
+.cf-field input.invalid {
+  border-color: #c2504a;
+  box-shadow: 0 0 0 3px rgba(194, 80, 74, 0.12);
+}
+
+/* Custom select chevron */
+.cf-select { position: relative; }
+.cf-select select {
+  appearance: none;
+  -webkit-appearance: none;
+  padding-right: 2.5rem;
+  cursor: pointer;
+}
+.cf-select svg {
+  position: absolute;
+  right: 0.9rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 18px;
+  height: 18px;
+  color: var(--muted);
+  pointer-events: none;
+}
+
+/* Honeypot — visually hidden but reachable by bots */
+.cf-hp {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+
+.cf-error {
+  color: #c2504a;
+  font-size: 0.88rem;
+}
+
+.cf-submit {
+  margin-top: 0.25rem;
+  justify-content: center;
+  width: 100%;
+}
+
+/* Success state */
+.cf-success {
+  text-align: center;
+  padding: 1.5rem 0.5rem 0.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+}
+.cf-check {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  color: #fff;
+  background: var(--grad-brand);
+  box-shadow: 0 12px 28px rgba(var(--teal-rgb), 0.4);
+  animation: cf-pop 0.4s var(--ease-out) both;
+}
+.cf-check svg { width: 30px; height: 30px; }
+.cf-success h3 { font-size: 1.4rem; }
+.cf-success p { color: var(--ink-500); max-width: 320px; }
+.cf-success .btn { margin-top: 0.5rem; }
+
+@media (max-width: 480px) {
+  .cf-row { grid-template-columns: 1fr; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cf-backdrop, .cf-dialog, .cf-check { animation: none; }
+}

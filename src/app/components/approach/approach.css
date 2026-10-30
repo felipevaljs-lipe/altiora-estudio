@@ -1,0 +1,80 @@
+:host {
+  display: block;
+}
+
+.section-head {
+  margin-bottom: 2.5rem;
+}
+
+.section-head h2 {
+  margin-top: 0.75rem;
+}
+
+/* 4-step timeline strip */
+.timeline {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem;
+  position: relative;
+  padding: 0;
+  margin: 0;
+}
+
+.timeline::before {
+  content: "";
+  position: absolute;
+  top: 27px;
+  left: 6%;
+  right: 6%;
+  height: 2px;
+  background: linear-gradient(90deg, var(--indigo-500), var(--violet-500), var(--cyan-400));
+  opacity: 0.2;
+}
+
+.step {
+  position: relative;
+  text-align: center;
+  list-style: none;
+}
+
+.step-num {
+  position: relative;
+  z-index: 1;
+  display: inline-grid;
+  place-items: center;
+  width: 54px; height: 54px;
+  margin: 0 auto 1.1rem;
+  border-radius: 50%;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1rem;
+  color: #fff;
+  background: var(--grad-brand);
+  box-shadow: 0 8px 22px rgba(70, 129, 137, 0.3);
+}
+
+.step-body h3 {
+  margin-bottom: 0.4rem;
+  font-size: 1rem;
+}
+
+.step-body p {
+  font-size: 0.9rem;
+  color: var(--ink-500);
+  line-height: 1.55;
+}
+
+@media (max-width: 860px) {
+  .timeline {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem 1.5rem;
+  }
+  .timeline::before { display: none; }
+}
+
+@media (max-width: 480px) {
+  .timeline {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+}

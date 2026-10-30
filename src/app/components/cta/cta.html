@@ -1,0 +1,36 @@
+<section class="section cta-section" id="contacto">
+  <div class="container">
+    <div class="cta-card" reveal>
+      <div class="cta-bg" aria-hidden="true">
+        <div class="cta-orb cta-orb-1"></div>
+        <div class="cta-orb cta-orb-2"></div>
+        <div class="cta-grid"></div>
+      </div>
+      <div class="cta-content">
+        <h2 class="cta-title">
+          ¿Tienes un proyecto?
+          <span class="text-grad"> Cuéntanoslo ahora.</span>
+        </h2>
+        <p class="cta-sub">
+          Usa el chat — Alti te escucha y conectamos enseguida.
+        </p>
+        <div class="cta-actions">
+          <a class="btn btn-primary" href="#inicio">
+            Hablar con Alti
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M4 5h16a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H10l-5 4v-4H4a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1z"
+                    stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </a>
+          <button type="button" class="btn btn-light" (click)="formOpen.set(true)">
+            o escríbenos
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  @if (formOpen()) {
+    <en-contact-form (closed)="formOpen.set(false)" />
+  }
+</section>

@@ -1,0 +1,20 @@
+<section class="section section--soft" id="enfoque">
+  <div class="container">
+    <div class="section-head" reveal>
+      <span class="eyebrow eyebrow--centered">Cómo trabajamos</span>
+      <h2>De tu idea a <span class="text-grad">producción</span></h2>
+    </div>
+
+    <ol class="timeline">
+      @for (step of steps; track step.num; let i = $index) {
+        <li class="step" [attr.data-delay]="i + 1" reveal>
+          <span class="step-num">{{ step.num }}</span>
+          <div class="step-body">
+            <h3>{{ step.title }}</h3>
+            <p>{{ step.desc }}</p>
+          </div>
+        </li>
+      }
+    </ol>
+  </div>
+</section>

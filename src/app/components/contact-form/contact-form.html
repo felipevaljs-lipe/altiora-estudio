@@ -1,0 +1,104 @@
+<div class="cf-backdrop" (click)="onBackdrop($event)">
+  <div class="cf-dialog" role="dialog" aria-modal="true" aria-labelledby="cf-title">
+    <button type="button" class="cf-close" (click)="close()" aria-label="Cerrar">
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+      </svg>
+    </button>
+
+    @if (status() !== 'sent') {
+      <header class="cf-head">
+        <h3 id="cf-title">Cuéntanos tu proyecto</h3>
+        <p>Te respondemos en menos de 24&nbsp;h. Solo el correo es obligatorio.</p>
+      </header>
+
+      <form class="cf-form" (submit)="$event.preventDefault(); submit()">
+        <!-- Honeypot: hidden from users, catches bots -->
+        <input
+          class="cf-hp"
+          type="text"
+          tabindex="-1"
+          autocomplete="off"
+          aria-hidden="true"
+          [value]="website()"
+          (input)="website.set($any($event.target).value)"
+        />
+
+        <div class="cf-row">
+          <label class="cf-field">
+            <span>Nombre</span>
+            <input
+              #firstField
+              type="text"
+              [value]="nombre()"
+              (input)="nombre.set($any($event.target).value)"
+              placeholder="Tu nombre"
+              autocomplete="name"
+              maxlength="120"
+            />
+          </label>
+
+          <label class="cf-field">
+            <span>Correo <em>*</em></span>
+            <input
+              type="email"
+              [value]="email()"
+              (input)="email.set($any($event.target).value)"
+              placeholder="tucorreo@ejemplo.com"
+              autocomplete="email"
+              maxlength="160"
+              [class.invalid]="email().length > 0 && !emailValid()"
+            />
+          </label>
+        </div>
+
+        <label class="cf-field">
+          <span>Servicio</span>
+          <div class="cf-select">
+            <select [value]="servicio()" (change)="servicio.set($any($event.target).value)">
+              <option value="">¿Qué te interesa?</option>
+              @for (s of servicios; track s) {
+                <option [value]="s">{{ s }}</option>
+              }
+            </select>
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </div>
+        </label>
+
+        <label class="cf-field">
+          <span>Mensaje</span>
+          <textarea
+            rows="4"
+            [value]="mensaje()"
+            (input)="mensaje.set($any($event.target).value)"
+            placeholder="Cuéntanos qué quieres construir…"
+            maxlength="2000"
+          ></textarea>
+        </label>
+
+        @if (errorMsg()) {
+          <p class="cf-error" role="alert">{{ errorMsg() }}</p>
+        }
+
+        <button type="submit" class="btn btn-primary cf-submit" [disabled]="!canSubmit()">
+          {{ status() === 'sending' ? 'Enviando…' : 'Enviar mensaje' }}
+        </button>
+      </form>
+    } @else {
+      <div class="cf-success" role="status">
+        <span class="cf-check" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none">
+            <path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.5"
+                  stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </span>
+        <h3>¡Mensaje enviado!</h3>
+        <p>Gracias por escribirnos. Te contactaremos muy pronto. ☁️</p>
+        <button type="button" class="btn btn-primary" (click)="close()">Listo</button>
+      </div>
+    }
+  </div>
+</div>

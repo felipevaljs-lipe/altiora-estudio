@@ -1,0 +1,201 @@
+:host {
+  display: block;
+}
+
+.hero {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-top: var(--header-h);
+  background: var(--grad-hero);
+  color: #e7ebf5;
+  overflow: hidden;
+}
+
+/* Background decoration */
+.hero-bg {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.grid-fade {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+  background-size: 56px 56px;
+  mask-image: radial-gradient(120% 90% at 50% 18%, #000 35%, transparent 80%);
+  -webkit-mask-image: radial-gradient(120% 90% at 50% 18%, #000 35%, transparent 80%);
+}
+
+.orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(60px);
+  opacity: 0.55;
+  animation: float 14s var(--ease) infinite;
+}
+.orb-1 {
+  width: 400px; height: 400px;
+  top: -100px; right: -60px;
+  background: radial-gradient(circle, rgba(70, 129, 137, 0.55), transparent 65%);
+}
+.orb-2 {
+  width: 340px; height: 340px;
+  bottom: -120px; left: -40px;
+  background: radial-gradient(circle, rgba(119, 172, 162, 0.4), transparent 65%);
+  animation-delay: -5s;
+}
+.orb-3 {
+  width: 240px; height: 240px;
+  top: 40%; left: 46%;
+  background: radial-gradient(circle, rgba(70, 129, 137, 0.3), transparent 65%);
+  animation-delay: -9s;
+}
+
+@keyframes float {
+  0%, 100% { transform: translate(0, 0); }
+  50%       { transform: translate(0, -24px); }
+}
+
+/* Layout */
+.hero-inner {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: 1fr 1.1fr;
+  gap: clamp(2rem, 5vw, 4rem);
+  align-items: center;
+  padding-block: clamp(2rem, 5vw, 4rem);
+}
+
+/* Copy — stripped to the minimum */
+.hero-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+h1 {
+  color: #fff;
+  font-weight: 800;
+  letter-spacing: -0.035em;
+  line-height: 1.04;
+  animation: fade-up 0.7s var(--ease-out) both;
+}
+
+.hero-sub {
+  font-size: clamp(1rem, 1.3vw, 1.15rem);
+  color: #a9c0c0;
+  line-height: 1.65;
+  max-width: 440px;
+  animation: fade-up 0.7s var(--ease-out) 0.1s both;
+}
+
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* Visual */
+.hero-visual {
+  position: relative;
+  animation: fade-up 0.9s var(--ease-out) 0.05s both;
+}
+
+/* Scroll cue */
+.hero-scroll {
+  position: absolute;
+  left: 50%;
+  bottom: 24px;
+  transform: translateX(-50%);
+  width: 26px; height: 42px;
+  border-radius: 14px;
+  border: 2px solid rgba(255, 255, 255, 0.28);
+  display: grid;
+  place-items: start center;
+  padding-top: 8px;
+  z-index: 2;
+}
+.hero-scroll span {
+  width: 4px; height: 8px;
+  border-radius: 4px;
+  background: #fff;
+  animation: scroll-cue 1.6s infinite;
+}
+@keyframes scroll-cue {
+  0%   { opacity: 0; transform: translateY(0); }
+  40%  { opacity: 1; }
+  100% { opacity: 0; transform: translateY(14px); }
+}
+
+/* Responsive -------------------------------------------------------------- */
+
+/*
+   On mobile/tablet the hero fills the full viewport and the chat card
+   grows to take all the space left under the headline. This gives the
+   conversation real room instead of cramming it into a short fixed box.
+*/
+@media (max-width: 900px) {
+  .hero {
+    /* Fill the screen so we can hand the leftover height to the chat */
+    min-height: 100svh;
+    justify-content: flex-start;
+  }
+
+  .hero-inner {
+    /* Switch from grid to a full-height flex column */
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    gap: 1.25rem;
+    flex: 1;
+    min-height: 0;
+    /* Leave room under the fixed header */
+    padding-block: 1.5rem 1.5rem;
+  }
+
+  /* Text first, compact, then the chat fills the rest */
+  .hero-copy {
+    order: 1;
+    align-items: center;
+    flex-shrink: 0;
+    gap: 0.85rem;
+  }
+  .hero-visual {
+    order: 2;
+    flex: 1;            /* take all remaining vertical space */
+    min-height: 0;      /* allow the inner chat to scroll, not overflow */
+    width: 100%;
+    display: flex;
+  }
+
+  .hero-sub { margin-inline: auto; }
+
+  .hero-scroll { display: none; }
+}
+
+@media (max-width: 640px) {
+  /* Shrink the headline so the chat gets the lion's share of the screen */
+  .hero h1 { font-size: clamp(2rem, 9vw, 2.6rem); }
+  .hero-sub {
+    font-size: 0.95rem;
+    max-width: 340px;
+  }
+  .hero-inner {
+    gap: 1rem;
+    padding-block: 1rem 1.25rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .orb, .hero-scroll span, h1, .hero-sub, .hero-visual {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
