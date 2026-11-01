@@ -16,19 +16,33 @@ const REGION = process.env.AWS_REGION || 'us-east-1';
 const TABLE_NAME = process.env.LEADS_TABLE || 'EstudioNubeLeads';
 const SES_FROM = process.env.SES_FROM;
 const SES_TO = process.env.SES_TO;
-const ALLOWED_ORIGIN = process.env.ALLOWED_ORIGIN || '*';
+// Comma-separated allowlist, e.g. "https://altioraestudio.com,https://www.altioraestudio.com".
+// Falls back to "*" if unset. We echo back the request's Origin only if it's
+// in the allowlist — the correct way to support multiple exact origins.
+const ALLOWED_ORIGINS = (process.env.ALLOWED_ORIGINS || process.env.ALLOWED_ORIGIN || '*')
+  .split(',')
+  .map((o) => o.trim())
+  .filter(Boolean);
 
 const ddb = DynamoDBDocumentClient.from(new DynamoDBClient({ region: REGION }));
 const ses = SES_FROM && SES_TO ? new SESClient({ region: REGION }) : null;
 
-function response(statusCode, body) {
+function pickOrigin(event) {
+  if (ALLOWED_ORIGINS.includes('*')) return '*';
+  const h = event?.headers ?? {};
+  const origin = h.origin || h.Origin || '';
+  return ALLOWED_ORIGINS.includes(origin) ? origin : ALLOWED_ORIGINS[0];
+}
+
+function response(statusCode, body, origin = '*') {
   return {
     statusCode,
     headers: {
       'content-type': 'application/json',
-      'access-control-allow-origin': ALLOWED_ORIGIN,
+      'access-control-allow-origin': origin,
       'access-control-allow-headers': 'content-type',
       'access-control-allow-methods': 'POST,OPTIONS',
+      'vary': 'Origin',
     },
     body: JSON.stringify(body),
   };
@@ -44,15 +58,16 @@ function clean(v, max) {
 }
 
 export const handler = async (event) => {
+  const origin = pickOrigin(event);
   const method = event.requestContext?.http?.method || event.httpMethod || 'POST';
-  if (method === 'OPTIONS') return response(204, {});
-  if (method !== 'POST') return response(405, { error: 'Método no permitido' });
+  if (method === 'OPTIONS') return response(204, {}, origin);
+  if (method !== 'POST') return response(405, { error: 'Método no permitido' }, origin);
 
   let data;
   try {
     data = JSON.parse(event.body || '{}');
   } catch {
-    return response(400, { error: 'Cuerpo inválido' });
+    return response(400, { error: 'Cuerpo inválido' }, origin);
   }
 
   const nombre = clean(data.nombre, 120);
@@ -62,13 +77,13 @@ export const handler = async (event) => {
 
   // Minimal validation: a valid email is the one hard requirement.
   if (!isValidEmail(email)) {
-    return response(400, { error: 'Necesitamos un correo válido.' });
+    return response(400, { error: 'Necesitamos un correo válido.' }, origin);
   }
 
   // Honeypot: if the hidden "website" field is filled, it's a bot. Pretend OK.
   if (clean(data.website, 10)) {
     console.log('Honeypot triggered, dropping submission.');
-    return response(200, { ok: true });
+    return response(200, { ok: true }, origin);
   }
 
   const lead = {
@@ -88,7 +103,7 @@ export const handler = async (event) => {
     console.log('Contact lead saved:', lead.id);
   } catch (err) {
     console.error('DynamoDB put failed:', err);
-    return response(500, { error: 'No pudimos guardar tu mensaje. Intenta de nuevo.' });
+    return response(500, { error: 'No pudimos guardar tu mensaje. Intenta de nuevo.' }, origin);
   }
 
   if (ses) {
@@ -124,5 +139,5 @@ export const handler = async (event) => {
     }
   }
 
-  return response(200, { ok: true });
+  return response(200, { ok: true }, origin);
 };

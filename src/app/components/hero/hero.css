@@ -4,7 +4,8 @@
 
 .hero {
   position: relative;
-  min-height: 100vh;
+  min-height: 100vh;            /* fallback for older browsers */
+  min-height: 100dvh;           /* tracks usable viewport; shrinks for keyboard */
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -96,6 +97,24 @@ h1 {
   animation: fade-up 0.7s var(--ease-out) 0.1s both;
 }
 
+.hero-playground {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-weight: 600;
+  font-size: 0.98rem;
+  color: #fff;
+  padding: 0.5rem 0;
+  border-bottom: 2px solid rgba(119, 172, 162, 0.6);
+  width: fit-content;
+  transition: gap 0.2s var(--ease), border-color 0.2s var(--ease);
+  animation: fade-up 0.7s var(--ease-out) 0.18s both;
+}
+.hero-playground:hover {
+  gap: 0.75rem;
+  border-color: #F4E9CD;
+}
+
 @keyframes fade-up {
   from { opacity: 0; transform: translateY(18px); }
   to   { opacity: 1; transform: none; }
@@ -142,8 +161,11 @@ h1 {
 */
 @media (max-width: 900px) {
   .hero {
-    /* Fill the screen so we can hand the leftover height to the chat */
-    min-height: 100svh;
+    /* Fill the screen, but use dvh so the hero SHRINKS when the mobile
+       keyboard opens — instead of staying full height and exposing the next
+       section as blank space below the chat. */
+    min-height: 100svh;   /* fallback */
+    min-height: 100dvh;
     justify-content: flex-start;
   }
 

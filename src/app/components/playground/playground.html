@@ -1,0 +1,112 @@
+<section class="pg">
+  <div class="pg-inner">
+    <header class="pg-head">
+      <a class="back" href="/">← Inicio</a>
+      <span class="eyebrow">Playground</span>
+      <h1>Prueba nuestras <span class="text-grad">IA de AWS</span></h1>
+      <p class="pg-sub">
+        Demos en vivo de los servicios que usamos. Escribe algo y míralo funcionar —
+        sin registrarte, aquí mismo.
+      </p>
+    </header>
+
+    @if (!configured) {
+      <p class="pg-notice">El playground estará disponible muy pronto. 🚧</p>
+    } @else {
+      <div class="pg-grid">
+
+        <!-- Polly -->
+        <article class="demo">
+          <div class="demo-head">
+            <span class="demo-ico" aria-hidden="true">🔊</span>
+            <div>
+              <h2>Texto a voz</h2>
+              <p>Amazon Polly convierte tu texto en voz natural.</p>
+            </div>
+          </div>
+
+          <textarea
+            [value]="pollyText()"
+            (input)="pollyText.set($any($event.target).value)"
+            [attr.maxlength]="maxChars"
+            rows="3"
+            placeholder="Escribe algo para escucharlo…"
+            aria-label="Texto para convertir a voz"
+          ></textarea>
+
+          <div class="demo-actions">
+            <button type="button" class="btn btn-primary" (click)="speak()"
+                    [disabled]="pollyLoading() || !pollyText().trim()">
+              {{ pollyLoading() ? 'Generando…' : '🔊 Escuchar' }}
+            </button>
+            <span class="count">{{ pollyText().length }}/{{ maxChars }}</span>
+          </div>
+
+          @if (pollyError()) { <p class="demo-error">{{ pollyError() }}</p> }
+          @if (audioUrl()) {
+            <audio class="demo-audio" [src]="audioUrl()" controls autoplay></audio>
+          }
+        </article>
+
+        <!-- Comprehend -->
+        <article class="demo">
+          <div class="demo-head">
+            <span class="demo-ico" aria-hidden="true">🧠</span>
+            <div>
+              <h2>Análisis de texto</h2>
+              <p>Amazon Comprehend detecta sentimiento, idioma y entidades.</p>
+            </div>
+          </div>
+
+          <textarea
+            [value]="compText()"
+            (input)="compText.set($any($event.target).value)"
+            [attr.maxlength]="maxChars"
+            rows="3"
+            placeholder="Escribe una opinión o frase…"
+            aria-label="Texto para analizar"
+          ></textarea>
+
+          <div class="demo-actions">
+            <button type="button" class="btn btn-primary" (click)="analyze()"
+                    [disabled]="compLoading() || !compText().trim()">
+              {{ compLoading() ? 'Analizando…' : '🧠 Analizar' }}
+            </button>
+            <span class="count">{{ compText().length }}/{{ maxChars }}</span>
+          </div>
+
+          @if (compError()) { <p class="demo-error">{{ compError() }}</p> }
+
+          @if (compResult(); as r) {
+            <div class="comp-result">
+              <div class="comp-row">
+                <span class="comp-label">Sentimiento</span>
+                <span class="comp-pill" [class]="'s-' + r.sentiment.toLowerCase()">{{ sentimentLabel() }}</span>
+              </div>
+              <div class="comp-row">
+                <span class="comp-label">Idioma</span>
+                <span class="comp-value">{{ r.language }}</span>
+              </div>
+              @if (r.entities.length) {
+                <div class="comp-row comp-row--col">
+                  <span class="comp-label">Entidades</span>
+                  <div class="comp-entities">
+                    @for (e of r.entities; track e.text) {
+                      <span class="comp-entity" [title]="e.type">{{ e.text }} <em>{{ e.type }}</em></span>
+                    }
+                  </div>
+                </div>
+              }
+            </div>
+          }
+        </article>
+
+      </div>
+
+      <div class="pg-cta">
+        <p>¿Quieres algo así en tu producto?</p>
+        <a class="btn btn-primary" href="/#contacto">Hablemos de tu proyecto</a>
+      </div>
+    }
+  </div>
+</section>

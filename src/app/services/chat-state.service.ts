@@ -37,6 +37,13 @@ export class ChatStateService {
   /** Shared input value so typing in one view carries over to the other. */
   readonly input = signal('');
 
+  /**
+   * Shared "open the floating widget panel" flag. The hero chat (on mobile)
+   * sets this true to pop the full-screen widget instead of typing in the
+   * cramped inline card; the widget's close button sets it false.
+   */
+  readonly panelOpen = signal(false);
+
   /** How many messages the visitor has sent this session. */
   readonly userMessageCount = signal(0);
 

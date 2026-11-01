@@ -1,4 +1,5 @@
 import { Component, HostListener, computed, signal } from '@angular/core';
+import { RouterLink } from '@angular/router';
 
 interface NavLink {
   label: string;
@@ -7,7 +8,7 @@ interface NavLink {
 
 @Component({
   selector: 'en-header',
-  imports: [],
+  imports: [RouterLink],
   templateUrl: './header.html',
   styleUrl: './header.css',
 })

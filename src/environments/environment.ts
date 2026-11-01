@@ -21,7 +21,11 @@ export const environment = {
   contact: {
     // POST endpoint from aws/setup-contact.sh (…/contact). Empty = the form
     // falls back to a mailto: link so it still works before the API is live.
-    apiUrl: '',
+    apiUrl: 'https://aczif5jdtg.execute-api.us-east-1.amazonaws.com/contact',
     email: 'hola@altioraestudio.com',
+  },
+  playground: {
+    // Base endpoint from aws/setup-playground.sh (…/playground/polly etc).
+    apiUrl: '',
   },
 };

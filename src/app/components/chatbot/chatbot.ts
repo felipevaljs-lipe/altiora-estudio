@@ -7,6 +7,7 @@ import {
   OnInit,
   ViewChild,
   afterNextRender,
+  effect,
   inject,
   signal,
 } from '@angular/core';
@@ -40,8 +41,11 @@ export class Chatbot implements OnInit, OnDestroy {
   protected get sending()  { return this.chat.sending; }
   protected get input()    { return this.chat.input; }
 
-  /** Widget: panel open state (local to widget instance). */
-  protected readonly open = signal(false);
+  /**
+   * Widget panel open state — backed by the SHARED signal so the hero chat can
+   * open it too (mobile). Exposed as `open` to keep the template unchanged.
+   */
+  protected get open() { return this.chat.panelOpen; }
 
   /**
    * Widget: becomes true once the hero section leaves the viewport.
@@ -59,6 +63,39 @@ export class Chatbot implements OnInit, OnDestroy {
     afterNextRender(() => {
       this.scrollToBottom();
     });
+
+    // When the shared panel opens (e.g. the hero triggered it), the widget
+    // instance scrolls to the latest message and focuses its input.
+    effect(() => {
+      if (this.mode === 'widget' && this.chat.panelOpen()) {
+        setTimeout(() => {
+          this.scrollToBottom();
+          this.inputRef?.nativeElement.focus();
+        }, 340);
+      }
+    });
+  }
+
+  /**
+   * On narrow screens the hero chat renders its input as a LAUNCHER BUTTON
+   * (not a real text field) — tapping it opens the full-screen widget panel,
+   * exactly like the floating FAB. This avoids all the focus/keyboard glitches
+   * of trying to intercept a real <input>. Matches the sheet CSS breakpoint.
+   */
+  protected readonly isMobile = signal(
+    typeof window !== 'undefined' && window.matchMedia('(max-width: 640px)').matches,
+  );
+
+  @HostListener('window:resize')
+  protected onResize(): void {
+    this.isMobile.set(
+      typeof window !== 'undefined' && window.matchMedia('(max-width: 640px)').matches,
+    );
+  }
+
+  /** Hero launcher (mobile): open the shared widget panel. */
+  protected openPanelFromHero(): void {
+    this.chat.panelOpen.set(true);
   }
 
   // ── Lifecycle ──────────────────────────────────────────────────────────

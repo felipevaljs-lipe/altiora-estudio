@@ -319,6 +319,31 @@
 }
 .hc-input input:disabled { opacity: 0.5; }
 
+/* Mobile launcher that looks like the input row but is a single button. */
+.hc-input-launcher {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.5rem 0.5rem 0.5rem 1rem;
+  border-radius: var(--r-pill);
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.2s var(--ease), border-color 0.2s var(--ease);
+}
+.hc-input-launcher:hover,
+.hc-input-launcher:active {
+  background: rgba(255,255,255,0.08);
+  border-color: rgba(119, 172, 162, 0.5);
+}
+.hc-input-launcher > span:first-child {
+  color: #7e9699;
+  font-size: max(0.88rem, 16px);
+}
+
 .hc-send {
   flex: none;
   width: 42px; height: 42px;
@@ -352,6 +377,25 @@
   transform: translateY(8px);
   transition: opacity 0.5s var(--ease), transform 0.5s var(--ease);
 }
+/* When the panel is opened (e.g. from the hero chat), the wrapper must be
+   interactive even if the hero is still on screen and the FAB is hidden.
+   CRITICAL: remove the transform INSTANTLY (no transition). Any transform on
+   this wrapper makes the panel's `position: fixed` anchor to the wrapper (~43px)
+   instead of the viewport — which rendered the panel tiny, bottom-right
+   ("squeezed on the right") during the 0.5s transform transition. */
+.chatbot.panel-active {
+  opacity: 1;
+  pointer-events: auto;
+  transform: none;
+  transition: none;
+  z-index: 200;
+}
+/* But keep the FAB itself hidden over the hero — only the panel shows. */
+.chatbot.panel-active:not(.is-visible) .launcher {
+  opacity: 0;
+  pointer-events: none;
+}
+
 .chatbot.is-visible {
   opacity: 1;
   pointer-events: auto;
@@ -652,14 +696,22 @@
    MOBILE — bottom sheet
    ================================================================ */
 @media (max-width: 640px) {
-  /* Widget: keep FAB in bottom-right, restore normal fixed positioning */
+  /* Widget: keep FAB in bottom-right, restore normal fixed positioning.
+     NEVER transform the wrapper on mobile — a transform here would trap the
+     panel's `position: fixed` inside this tiny wrapper (the "squeezed on the
+     right" bug). We fade the FAB with opacity only, no transform. */
   .chatbot {
     right: clamp(1rem, 3vw, 1.75rem);
     bottom: clamp(1rem, 3vw, 1.75rem);
     left: auto;
+    transform: none !important;
+    transition: opacity 0.4s var(--ease) !important;
   }
 
-  /* Panel becomes a full-width bottom sheet */
+  /* Panel becomes a full-width bottom sheet.
+     Always full-size here (never the desktop mini-card), and we animate ONLY
+     translateY — so there's no "squeezed then opens" flash: it just slides up
+     already full-width. opacity stays 1 so no desktop fade state shows. */
   .panel {
     position: fixed;
     left: 0;
@@ -673,9 +725,22 @@
     border-radius: var(--r-lg) var(--r-lg) 0 0;
     transform-origin: bottom center;
     transform: translateY(100%);
+    opacity: 1;
+    transition: transform 0.32s var(--ease);
   }
   .panel.is-open {
     transform: translateY(0);
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  /* FIX: on the full-screen sheet, the FAB (which becomes an ✕ when open)
+     sits bottom-right — right on top of the send button. Hide the FAB whenever
+     the panel is open so it can't be mistaken for / overlap the send button.
+     The panel's own header ✕ is the close control. */
+  .chatbot.panel-active .launcher {
+    opacity: 0;
+    pointer-events: none;
   }
 
   /* Show the drag handle on mobile */

@@ -1,0 +1,31 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "Polly",
+      "Effect": "Allow",
+      "Action": ["polly:SynthesizeSpeech"],
+      "Resource": "*"
+    },
+    {
+      "Sid": "Comprehend",
+      "Effect": "Allow",
+      "Action": [
+        "comprehend:DetectSentiment",
+        "comprehend:DetectEntities",
+        "comprehend:DetectDominantLanguage"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "Logs",
+      "Effect": "Allow",
+      "Action": [
+        "logs:CreateLogGroup",
+        "logs:CreateLogStream",
+        "logs:PutLogEvents"
+      ],
+      "Resource": "arn:aws:logs:us-east-1:229975483756:*"
+    }
+  ]
+}
